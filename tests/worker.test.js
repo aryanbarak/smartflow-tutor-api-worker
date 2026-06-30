@@ -41,7 +41,7 @@ async function run() {
     const res = await handleRequest(req, env);
     assert.equal(res.status, 200);
     const body = await readJson(res);
-    assert.deepEqual(body, { ok: true, service: "dailyflow-tutor-api" });
+    assert.deepEqual(body, { ok: true, service: "smartflow-tutor-api" });
   }
 
   {

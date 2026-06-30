@@ -280,7 +280,7 @@ export async function handleRequest(request, env) {
   }
 
   if (url.pathname === "/v1/health" && request.method === "GET") {
-    return json({ ok: true, service: "dailyflow-tutor-api" }, 200, apiHeaders(request));
+    return json({ ok: true, service: "smartflow-tutor-api" }, 200, apiHeaders(request));
   }
 
   if (url.pathname.startsWith("/v1/")) {

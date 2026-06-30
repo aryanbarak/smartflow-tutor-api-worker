@@ -1,5 +1,5 @@
 ﻿{
-  "name": "dailyflow-tutor-api-worker",
+  "name": "smartflow-tutor-api-worker",
   "version": "1.0.0",
   "private": true,
   "type": "module",

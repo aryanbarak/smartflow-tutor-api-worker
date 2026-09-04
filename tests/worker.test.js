@@ -64,6 +64,33 @@ async function run() {
     assert.equal(body.detail, "Unauthorized");
   }
 
+  // ORIGIN-01: the new SmartFlow origins and local dev pass the origin gate
+  // (401 = origin accepted, token still enforced); https-localhost stays out.
+  for (const origin of [
+    "https://smartaryn.com",
+    "https://www.smartaryn.com",
+    "http://localhost:8080",
+    "http://127.0.0.1:5173",
+    "http://192.168.178.42:8080",
+    "http://10.0.0.7:8080",
+    "http://172.16.5.9:8080",
+  ]) {
+    const req = new Request("https://api.barakzai.cloud/v1/topics", {
+      headers: { Origin: origin },
+    });
+    const res = await handleRequest(req, env);
+    assert.equal(res.status, 401, `origin gate should accept ${origin}`);
+    assert.equal(res.headers.get("access-control-allow-origin"), origin);
+  }
+
+  {
+    const req = new Request("https://api.barakzai.cloud/v1/topics", {
+      headers: { Origin: "https://localhost:8080", "X-Adapter-Token": "dev-secret" },
+    });
+    const res = await handleRequest(req, env);
+    assert.equal(res.status, 403);
+  }
+
   {
     const req = new Request("https://api.barakzai.cloud/v1/topics", {
       headers: {

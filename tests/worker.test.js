@@ -67,8 +67,8 @@ async function run() {
   // ORIGIN-01: the new SmartFlow origins and local dev pass the origin gate
   // (401 = origin accepted, token still enforced); https-localhost stays out.
   for (const origin of [
-    "https://smartaryan.com",
-    "https://www.smartaryan.com",
+    "https://smartaryn.com",
+    "https://www.smartaryn.com",
     "http://localhost:8080",
     "http://127.0.0.1:5173",
     "http://192.168.178.42:8080",

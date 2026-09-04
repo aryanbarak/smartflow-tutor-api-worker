@@ -1,16 +1,17 @@
 ﻿// ORIGIN-01: allowlist instead of a single origin. SmartFlow moved from
-// barakzai.cloud to smartaryan.com; the old exact-match check made /v1/*
-// return 403 for the new site (and for local dev), so Tutor Run/Test was
-// unreachable from everywhere. For development, plain-http origins on
-// localhost/127.0.0.1 and RFC-1918 private LAN addresses are allowed
-// (the SmartFlow dev server binds "::" and is browsed via LAN IP); the
-// token check still applies to all of them.
+// barakzai.cloud to smartaryn.com (NOTE: no second "a" -- same spelling
+// as dailyflow-ai-worker's allowlist); the old exact-match check made
+// /v1/* return 403 for the new site (and for local dev), so Tutor
+// Run/Test was unreachable from everywhere. For development, plain-http
+// origins on localhost/127.0.0.1 and RFC-1918 private LAN addresses are
+// allowed (the SmartFlow dev server binds "::" and is browsed via LAN
+// IP); the token check still applies to all of them.
 const ALLOWED_ORIGINS = new Set([
-  "https://smartaryan.com",
-  "https://www.smartaryan.com",
+  "https://smartaryn.com",
+  "https://www.smartaryn.com",
   "https://barakzai.cloud",
 ]);
-const DEFAULT_ALLOWED_ORIGIN = "https://smartaryan.com";
+const DEFAULT_ALLOWED_ORIGIN = "https://smartaryn.com";
 const DEV_ORIGIN_RE =
   /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})(:\d+)?$/;
 

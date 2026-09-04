@@ -1,4 +1,22 @@
-﻿const ALLOWED_ORIGIN = "https://barakzai.cloud";
+﻿// ORIGIN-01: allowlist instead of a single origin. SmartFlow moved from
+// barakzai.cloud to smartaryan.com; the old exact-match check made /v1/*
+// return 403 for the new site (and for local dev), so Tutor Run/Test was
+// unreachable from everywhere. For development, plain-http origins on
+// localhost/127.0.0.1 and RFC-1918 private LAN addresses are allowed
+// (the SmartFlow dev server binds "::" and is browsed via LAN IP); the
+// token check still applies to all of them.
+const ALLOWED_ORIGINS = new Set([
+  "https://smartaryan.com",
+  "https://www.smartaryan.com",
+  "https://barakzai.cloud",
+]);
+const DEFAULT_ALLOWED_ORIGIN = "https://smartaryan.com";
+const DEV_ORIGIN_RE =
+  /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})(:\d+)?$/;
+
+function isAllowedOrigin(origin) {
+  return ALLOWED_ORIGINS.has(origin) || DEV_ORIGIN_RE.test(origin);
+}
 const CORS_ALLOW_HEADERS = "X-Adapter-Token, Content-Type";
 const CORS_ALLOW_METHODS = "GET,POST,OPTIONS";
 const CORS_MAX_AGE = "86400";
@@ -53,9 +71,9 @@ async function fetchYouTubeSearch(query) {
 
 function searchCorsHeaders(request) {
   const origin = request.headers.get("Origin") || "";
-  const isAllowed = origin === ALLOWED_ORIGIN || /^http:\/\/localhost(:\d+)?$/.test(origin);
+  const isAllowed = isAllowedOrigin(origin);
   return {
-    "Access-Control-Allow-Origin": isAllowed ? origin : ALLOWED_ORIGIN,
+    "Access-Control-Allow-Origin": isAllowed ? origin : DEFAULT_ALLOWED_ORIGIN,
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Allow-Methods": "GET, OPTIONS",
     "Access-Control-Max-Age": CORS_MAX_AGE,
@@ -65,7 +83,7 @@ function searchCorsHeaders(request) {
 
 function corsHeaders(request) {
   const origin = request.headers.get("Origin") || "";
-  const allowOrigin = origin === ALLOWED_ORIGIN ? origin : ALLOWED_ORIGIN;
+  const allowOrigin = isAllowedOrigin(origin) ? origin : DEFAULT_ALLOWED_ORIGIN;
 
   return {
     "Access-Control-Allow-Origin": allowOrigin,
@@ -96,7 +114,7 @@ function json(obj, status = 200, headers = {}) {
 
 function assertOrigin(request) {
   const origin = request.headers.get("Origin");
-  if (!origin || origin !== ALLOWED_ORIGIN) {
+  if (!origin || !isAllowedOrigin(origin)) {
     return { ok: false, status: 403, payload: { detail: "Forbidden origin" } };
   }
   return { ok: true };
